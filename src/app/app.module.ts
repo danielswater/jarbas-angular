@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER  } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,9 +11,11 @@ import { EventService } from './demo/service/event.service';
 import { IconService } from './demo/service/icon.service';
 import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
-import { environment } from '../environments/environment';
-import { initializeApp } from 'firebase/app';
+import {AngularFireModule} from '@angular/fire/compat';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { HomeComponent } from './site/home/home.component';
+import { UsuariosService } from './site/home/service/usuarios.service';
+import { initializeApp } from 'firebase/app';
 
 //prime
 import { FormsModule } from '@angular/forms';
@@ -27,6 +29,11 @@ import { CascadeSelectModule } from "primeng/cascadeselect";
 import { MultiSelectModule } from "primeng/multiselect";
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputTextModule } from "primeng/inputtext";
+import { environment } from 'src/environments/environment';
+
+export function initializeFirebaseApp() {
+  return () => initializeApp(environment.firebaseConfig);
+}
 
 @NgModule({
   declarations: [
@@ -45,12 +52,16 @@ import { InputTextModule } from "primeng/inputtext";
     CascadeSelectModule,
     MultiSelectModule,
     InputTextareaModule,
-    InputTextModule
+    InputTextModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireDatabaseModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     CountryService, CustomerService, EventService, IconService, NodeService,
-    PhotoService, ProductService
+    PhotoService, ProductService,
+    UsuariosService,
+    { provide: APP_INITIALIZER, useFactory: initializeFirebaseApp, multi: true }
   ],
   bootstrap: [AppComponent]
 })

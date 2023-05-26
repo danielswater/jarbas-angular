@@ -4,16 +4,19 @@
             <h5>Vertical</h5>
 			<div class="field">
 				<label htmlFor="name1">Name</label>
-				<input pInputText id="name1" type="text" />
+				<input [(ngModel)]="model.nome" pInputText id="name1" type="text" />
 			</div>
 			<div class="field">
 				<label htmlFor="email1">Email</label>
-				<input pInputText id="email1" type="text" />
+				<input [(ngModel)]="model.email" pInputText id="email1" type="text" />
 			</div>
 			<div class="field">
 				<label htmlFor="age1">Age</label>
-				<input pInputText id="age1" type="text" />
+				<input [(ngModel)]="model.idade" pInputText id="age1" type="text" />
 			</div>
+            <div class="field">
+                <p-button (click)="salvar()" label="Salvar"></p-button>
+            </div>
         </div>
     </div>
 </div>
