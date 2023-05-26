@@ -1,9 +1,10 @@
-<div class="grid" style="justify-content: center;">
+<!-- <ngx-spinner type="ball-scale-multiple"></ngx-spinner> -->
+<div class="grid" style="justify-content: center; margin-top: 30px;">
     <div class="col-12 md:col-6">
         <div class="card p-fluid">
             <h5>Teste de Cadastro</h5>
 			<div class="field">
-				<label htmlFor="name1">Name</label>
+				<label htmlFor="name1">Nome</label>
 				<input [(ngModel)]="model.nome" pInputText id="name1" type="text" />
 			</div>
 			<div class="field">
@@ -11,11 +12,12 @@
 				<input [(ngModel)]="model.email" pInputText id="email1" type="text" />
 			</div>
 			<div class="field">
-				<label htmlFor="age1">Age</label>
-				<input [(ngModel)]="model.idade" pInputText id="age1" type="text" />
+				<label htmlFor="age1">Celular</label>
+				
+                <p-inputMask mask="(99)-99999-9999" [(ngModel)]="model.telefone" placeholder="(99)-99999-9999"></p-inputMask>
 			</div>
             <div class="field">
-                <p-button (click)="salvar()" label="Salvar"></p-button>
+                <p-button  [loading]="loading" (click)="salvar()" label="Salvar"></p-button>
             </div>
         </div>
     </div>

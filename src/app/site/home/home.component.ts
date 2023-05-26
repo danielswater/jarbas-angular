@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -7,23 +8,32 @@ import { UsuariosService } from './service/usuarios.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private service: UsuariosService){}
-
   model = {
     nome: '',
     email: '',
-    idade: ''
+    telefone: ''
   }
+
+  loading: boolean = false;
+
+  constructor(private service: UsuariosService, private spinner: NgxSpinnerService){}
 
   ngOnInit(): void {
     
   }
 
   salvar(){
-    console.log('model', this.model)
+    // this.spinner.show()
+    this.loading = true;
     this.service.criarUsuario(this.model)
     .then((response) => {
-      console.log('response', response.id)
+      console.log(response)
+      setTimeout(() => {
+        this.loading = false
+    }, 2000);
+      // setTimeout(() => {
+      //   this.spinner.hide()
+      // }, 5000);
     })
     .catch((error) => {
       console.log('ERROR', error)

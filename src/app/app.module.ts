@@ -30,6 +30,9 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputTextModule } from "primeng/inputtext";
 import { environment } from 'src/environments/environment';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+import { NgxSpinnerModule } from "ngx-spinner";
 
 export function initializeFirebaseApp() {
   return () => initializeApp(environment.firebaseConfig);
@@ -53,6 +56,8 @@ export function initializeFirebaseApp() {
     MultiSelectModule,
     InputTextareaModule,
     InputTextModule,
+    ProgressSpinnerModule,
+    NgxSpinnerModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
   ],
