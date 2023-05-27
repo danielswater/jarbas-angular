@@ -1,3 +1,4 @@
+
 import { NgModule, APP_INITIALIZER  } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
@@ -32,6 +33,8 @@ import { InputTextModule } from "primeng/inputtext";
 import { environment } from 'src/environments/environment';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
+import { AgmCoreModule } from '@agm/core';
+
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
 //AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4
@@ -63,6 +66,10 @@ export function initializeFirebaseApp() {
     NgxSpinnerModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4',
+      libraries: ['places']
+    }),
     GooglePlaceModule
   ],
   providers: [

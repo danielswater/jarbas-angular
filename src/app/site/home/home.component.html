@@ -18,7 +18,9 @@
                 </div>
                 <div class="field col-12 md:col-9">
                     <label>Endereço</label>
-                    <input [(ngModel)]="modelCadastrUsuario.endereco" id="endereco" pInputText type="text" />
+                    <input ngx-google-places-autocomplete
+                    [options]="options"
+                    (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastrUsuario.endereco" id="endereco" pInputText type="text" />
                 </div>
 
                 <div class="field col-12 md:col-3">

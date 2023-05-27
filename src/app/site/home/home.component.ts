@@ -1,14 +1,21 @@
+import { MapsAPILoader } from '@agm/core';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { CadastroUsuario } from './interface/CadastroUsuario.interface';
-
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  isApiLoaded = false;
+
+  options: any = {
+    componentRestrictions: { country: 'BR',  }
+  }  
 
   modelCadastrUsuario: CadastroUsuario = {
     bairro: '',
@@ -30,10 +37,18 @@ export class HomeComponent implements OnInit {
 
   loading: boolean = false;
 
-  constructor(private service: UsuariosService, private spinner: NgxSpinnerService){}
+  constructor(private service: UsuariosService, private spinner: NgxSpinnerService, private mapsAPILoader: MapsAPILoader){}
 
   ngOnInit(): void {
-    
+    this.mapsAPILoader.load().then(() =>{
+      this.isApiLoaded = true
+    })
+  }
+
+  handleAddressChange(address: Address) {
+    console.log(address.formatted_address)
+    console.log(address.geometry.location.lat())
+    console.log(address.geometry.location.lng())
   }
 
   salvar(){
