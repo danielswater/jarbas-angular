@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
+import { CadastroUsuario } from './interface/CadastroUsuario.interface';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -8,10 +10,22 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class HomeComponent implements OnInit {
 
-  model = {
-    nome: '',
+  modelCadastrUsuario: CadastroUsuario = {
+    bairro: '',
+    cep: '',
+    cidade: '',
+    complemento: '',
+    cpf_cnpj: '',
     email: '',
-    telefone: ''
+    endereco: '',
+    estado: '',
+    nome_fantasia: '',
+    nome_responsavel: '',
+    numero: '',
+    razao_social: '',
+    senha: '',
+    telefone_estabelecimento: '',
+    telefone_responsavel: ''
   }
 
   loading: boolean = false;
@@ -25,7 +39,7 @@ export class HomeComponent implements OnInit {
   salvar(){
     // this.spinner.show()
     this.loading = true;
-    this.service.criarUsuario(this.model)
+    this.service.criarUsuario(this.modelCadastrUsuario)
     .then((response) => {
       console.log(response)
       setTimeout(() => {
