@@ -47,6 +47,9 @@ export class HomeComponent implements OnInit {
   }
 
   handleAddressChange(address: Address) {
+    // this.modelCadastrUsuario.numero = address.address_components[0].short_name
+    // console.log(address.address_components[0].short_name)
+    console.log(address)
     console.log(address.formatted_address)
     console.log(address.geometry.location.lat())
     console.log(address.geometry.location.lng())
