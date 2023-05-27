@@ -31,7 +31,9 @@ import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputTextModule } from "primeng/inputtext";
 import { environment } from 'src/environments/environment';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { GoogleMapsModule } from '@angular/google-maps';
 
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
 //AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -62,6 +64,8 @@ export function initializeFirebaseApp() {
     NgxSpinnerModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
+    GoogleMapsModule,
+    GooglePlaceModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

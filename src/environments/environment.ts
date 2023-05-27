@@ -6,6 +6,7 @@ import { initializeApp } from "firebase/app";
 
 export const environment = {
   production: false,
+  googleApiKey: 'AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4',
   firebaseConfig: {
     apiKey: "AIzaSyAT551MAygRMuN8HYeRw-95_uOSNbN_RyQ",
     authDomain: "jarbas-ffbff.firebaseapp.com",
