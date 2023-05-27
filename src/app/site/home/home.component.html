@@ -12,21 +12,24 @@
                     <label>Nome Fantasia</label>
                     <input [(ngModel)]="modelCadastrUsuario.email" pInputText type="text" />
                 </div>
-                <div class="field col-12 md:col-12">
-                    <label>CEP</label>				
-                    <p-inputMask mask="99999-999" [(ngModel)]="modelCadastrUsuario.cep"></p-inputMask>
-                </div>
-                <div class="field col-12 md:col-9">
+                
+                <div class="field col-12 md:col-6">
                     <label>Endereço</label>
-                    <input ngx-google-places-autocomplete
+                    <input id="inputElement" ngx-google-places-autocomplete
                     [options]="options"
                     (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastrUsuario.endereco" id="endereco" pInputText type="text" />
+                </div>
+
+                <div class="field col-12 md:col-3">
+                    <label>CEP</label>				
+                    <p-inputMask mask="99999-999" [(ngModel)]="modelCadastrUsuario.cep"></p-inputMask>
                 </div>
 
                 <div class="field col-12 md:col-3">
                     <label>Número</label>
                     <input [(ngModel)]="modelCadastrUsuario.numero" pInputText type="text" />
                 </div>
+                
 
                     <!-- <div class="field col-12 md:col-8">
                         <label>Endereço</label>
