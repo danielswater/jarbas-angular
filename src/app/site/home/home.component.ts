@@ -24,6 +24,8 @@ export class HomeComponent implements OnInit {
     componentRestrictions: { country: 'BR', }
   }
 
+  radioCpfCnpj = "CPF"
+
   modelCadastroUsuario: CadastroUsuario = {
     bairro: '',
     cep: '',
@@ -128,6 +130,10 @@ export class HomeComponent implements OnInit {
     );
 
     return neighborhoodComponent ? neighborhoodComponent.long_name : '';
+  }
+
+  tipoDoc(){
+    console.log(this.radioCpfCnpj)
   }
 
   salvar() {

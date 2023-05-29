@@ -32,7 +32,7 @@ import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputTextModule } from "primeng/inputtext";
 import { environment } from 'src/environments/environment';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { AgmCoreModule } from '@agm/core';
 
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
@@ -64,6 +64,7 @@ export function initializeFirebaseApp() {
     InputTextModule,
     ProgressSpinnerModule,
     NgxSpinnerModule,
+    RadioButtonModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AgmCoreModule.forRoot({
