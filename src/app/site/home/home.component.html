@@ -6,28 +6,28 @@
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md:col-12">
                     <label>Razão Social</label>
-                    <input [(ngModel)]="modelCadastrUsuario.razao_social" pInputText type="text" />
+                    <input [(ngModel)]="modelCadastroUsuario.razao_social" pInputText type="text" />
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Nome Fantasia</label>
-                    <input [(ngModel)]="modelCadastrUsuario.email" pInputText type="text" />
+                    <input [(ngModel)]="modelCadastroUsuario.email" pInputText type="text" />
                 </div>
                 
                 <div class="field col-12 md:col-6">
                     <label>Endereço</label>
                     <input id="inputElement" ngx-google-places-autocomplete
                     [options]="options"
-                    (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastrUsuario.endereco" id="endereco" pInputText type="text" />
+                    (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastroUsuario.logradouro" id="logradouro" pInputText type="text" />
                 </div>
 
                 <div class="field col-12 md:col-3">
                     <label>CEP</label>				
-                    <p-inputMask mask="99999-999" placeholder="00000-00" [(ngModel)]="modelCadastrUsuario.cep"></p-inputMask>
+                    <p-inputMask mask="99999-999" placeholder="00000-00" [(ngModel)]="modelCadastroUsuario.cep"></p-inputMask>
                 </div>
 
                 <div class="field col-12 md:col-3">
                     <label>Número</label>
-                    <input [(ngModel)]="modelCadastrUsuario.numero" pInputText type="text" />
+                    <input [(ngModel)]="modelCadastroUsuario.numero" pInputText type="text" />
                 </div>
                 
 
