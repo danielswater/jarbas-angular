@@ -17,6 +17,8 @@ declare var google: any;
 export class HomeComponent implements OnInit {
 
   isApiLoaded = false;
+  cidadeSelecionada: any;
+  cidades: any[] = [];
 
   options: any = {
     componentRestrictions: { country: 'BR', }
@@ -30,7 +32,7 @@ export class HomeComponent implements OnInit {
     cpf_cnpj: '',
     email: '',
     logradouro: '',
-    estado: '',
+    estado: 'SP',
     nome_fantasia: '',
     nome_responsavel: '',
     numero: '',
@@ -56,18 +58,50 @@ export class HomeComponent implements OnInit {
     })
   }
 
+
+  buscarCidades(event: any): void {
+    const query = event.query;
+    this.service.obterCidades('SP', query).subscribe((cidades: any[]) => {
+      this.cidades = cidades;
+    });
+  }
+
+
+  selecionarCidade(event: any): void {
+    this.modelCadastroUsuario.cidade = event.value
+    console.log(this.modelCadastroUsuario)
+  }
+
   handleAddressChange(address: Address) {
-    // const streetName = this.extractStreetName(address);
-    // const neighborhood = this.extractNeighborhood(address);
-    // const city = this.extractCity(address);
-    // const state = this.extractState(address);
+    const streetName = this.extractStreetName(address);
+    this.modelCadastroUsuario.logradouro = streetName
+    const neighborhood = this.extractNeighborhood(address);
+    this.modelCadastroUsuario.bairro = neighborhood
+    this.getCEP(address);
+  }
 
-    const fullAddress = address.formatted_address
-
-    console.log(fullAddress)
-
+  getCEP(address: Address): void {
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: fullAddress }, (results: any, status: any) => {
+    const geocodingOptions = {
+      address: address.formatted_address
+    };
+  
+    geocoder.geocode(geocodingOptions, (results: any, status: any) => {
+      if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+        const cepComponent = results[0].address_components.find((component: any) =>
+          component.types.includes('postal_code')
+        );
+  
+        const cep = cepComponent ? cepComponent.long_name : '';
+        this.modelCadastroUsuario.cep = cep;
+      }
+    });
+  }
+
+  getGeoLocalizacao(){
+    const endereco = `${this.modelCadastroUsuario.logradouro}, ${this.modelCadastroUsuario.numero} - ${this.modelCadastroUsuario.bairro}, ${this.modelCadastroUsuario.cidade} - SP, ${this.modelCadastroUsuario.cep}, Brasil`;
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: endereco }, (results: any, status: any) => {
       if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
         const location = results[0].geometry.location;
         const latitude = location.lat();
@@ -75,46 +109,32 @@ export class HomeComponent implements OnInit {
 
         const geopoint = new GeoPoint(latitude, longitude);
         this.modelCadastroUsuario.geolocalizacao = geopoint;
-        console.log('this.modelCadastroUsuario.geolocalizacao', this.modelCadastroUsuario.geolocalizacao);
       }
     });
   }
 
 
-  // extractStreetName(address: Address): string {
-  //   const routeComponent = address.address_components.find(component =>
-  //     component.types.includes('route')
-  //   );
+  extractStreetName(address: Address): string {
+    const routeComponent = address.address_components.find(component =>
+      component.types.includes('route')
+    );
 
-  //   return routeComponent ? routeComponent.long_name : '';
-  // }
+    return routeComponent ? routeComponent.long_name : '';
+  }
 
-  // extractNeighborhood(address: Address): string {
-  //   const neighborhoodComponent = address.address_components.find(component =>
-  //     component.types.includes('sublocality') || component.types.includes('neighborhood')
-  //   );
+  extractNeighborhood(address: Address): string {
+    const neighborhoodComponent = address.address_components.find(component =>
+      component.types.includes('sublocality') || component.types.includes('neighborhood')
+    );
 
-  //   return neighborhoodComponent ? neighborhoodComponent.long_name : '';
-  // }
-
-  // extractCity(address: Address): string {
-  //   const cityComponent = address.address_components.find(component =>
-  //     component.types.includes('locality')
-  //   );
-
-  //   return cityComponent ? cityComponent.long_name : '';
-  // }
-
-  // extractState(address: Address): string {
-  //   const stateComponent = address.address_components.find(component =>
-  //     component.types.includes('administrative_area_level_1')
-  //   );
-
-  //   return stateComponent ? stateComponent.long_name : '';
-  // }
+    return neighborhoodComponent ? neighborhoodComponent.long_name : '';
+  }
 
   salvar() {
     // this.spinner.show()
+    this.getGeoLocalizacao()
+    console.log(this.modelCadastroUsuario)
+    return
     this.loading = true;
     this.service.criarUsuario(this.modelCadastroUsuario)
       .then((response) => {
@@ -130,4 +150,5 @@ export class HomeComponent implements OnInit {
         console.log('ERROR', error)
       })
   }
+
 }
