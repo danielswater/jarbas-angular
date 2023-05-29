@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
   
     const fullAddress = `${streetName}, ${neighborhood}, ${city}, ${state}`;
   
-    const apiUrl = 'https://nominatim.openstreetmap.org/search';
+    const apiUrl = 'https://nominatim.openstreetmap.org/search?';
     const params = {
       q: fullAddress,
       format: 'json',
@@ -72,6 +72,7 @@ export class HomeComponent implements OnInit {
     };
   
     this.httpClient.get<any[]>(apiUrl, { params }).subscribe((response) => {
+      console.log('response', response)
       if (response.length > 0) {
         const latitude = parseFloat(response[0].lat);
         const longitude = parseFloat(response[0].lon);
