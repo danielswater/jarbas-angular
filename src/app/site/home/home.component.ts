@@ -39,8 +39,7 @@ export class HomeComponent implements OnInit {
     nome_responsavel: '',
     numero: '',
     razao_social: '',
-    senha: '',
-    tipo_documento: '',
+    tipo_documento: 'CNPJ',
     telefone_estabelecimento: '',
     telefone_responsavel: '',
     geolocalizacao : new GeoPoint(0, 0),
@@ -101,7 +100,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getGeoLocalizacao(){
+  salvar(){
     const endereco = `${this.modelCadastroUsuario.logradouro}, ${this.modelCadastroUsuario.numero} - ${this.modelCadastroUsuario.bairro}, ${this.modelCadastroUsuario.cidade} - SP, ${this.modelCadastroUsuario.cep}, Brasil`;
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address: endereco }, (results: any, status: any) => {
@@ -113,24 +112,17 @@ export class HomeComponent implements OnInit {
         const geopoint = new GeoPoint(latitude, longitude);
         this.modelCadastroUsuario.geolocalizacao = geopoint;
   
-        // Chamar o método criarUsuario() aqui, após obter a geolocalização
-        this.criarUsuario();
+        this.loading = true;
+        this.service.criarUsuario(this.modelCadastroUsuario)
+          .then((response) => {
+            console.log(response)
+            this.loading = false;
+          })
+          .catch((error) => {
+            console.log('ERROR', error)
+          });
       }
     });
-  }
-
-  criarUsuario() {
-    // Remova a chamada para getGeoLocalizacao() aqui
-  
-    this.loading = true;
-    this.service.criarUsuario(this.modelCadastroUsuario)
-      .then((response) => {
-        console.log(response)
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.log('ERROR', error)
-      });
   }
 
 
@@ -153,20 +145,6 @@ export class HomeComponent implements OnInit {
   tipoDoc(){
     console.log(this.radioCpfCnpj)
     this.modelCadastroUsuario.tipo_documento = this.radioCpfCnpj
-  }
-
-  salvar() {
-    // this.spinner.show()
-    this.getGeoLocalizacao()
-    this.loading = true;
-    this.service.criarUsuario(this.modelCadastroUsuario)
-      .then((response) => {
-        console.log(response)
-          this.loading = false
-      })
-      .catch((error) => {
-        console.log('ERROR', error)
-      })
   }
 
 }

@@ -12,7 +12,6 @@ export interface CadastroUsuario {
   tipo_documento: string,
   numero: string;
   razao_social: string;
-  senha: string;
   telefone_estabelecimento: string;
   telefone_responsavel: string;
   geolocalizacao?: firebase.default.firestore.GeoPoint;
