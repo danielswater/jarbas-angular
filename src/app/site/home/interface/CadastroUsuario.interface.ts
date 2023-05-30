@@ -9,6 +9,7 @@ export interface CadastroUsuario {
   estado: string;
   nome_fantasia: string;
   nome_responsavel: string;
+  tipo_documento: string,
   numero: string;
   razao_social: string;
   senha: string;

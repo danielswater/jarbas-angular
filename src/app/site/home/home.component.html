@@ -10,13 +10,27 @@
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Nome Fantasia</label>
-                    <input [(ngModel)]="modelCadastroUsuario.email" pInputText type="text" />
+                    <input [(ngModel)]="modelCadastroUsuario.nome_fantasia" pInputText type="text" />
                 </div>
 
                 <div class="field col-12 md:col-12">
                     <label>Nome do Responsável</label>
                     <input [(ngModel)]="modelCadastroUsuario.nome_responsavel" pInputText type="text" />
                 </div>
+
+                <div class="field col-12 md:col-12">
+                    <label>email</label>
+                    <input [(ngModel)]="modelCadastroUsuario.email" pInputText type="email" />
+                </div>
+
+                <div class="field col-12 md:col-12">
+                    <label>Telefone Fixo do Responsável</label>
+                    <p-inputMask mask="(99) 99999-9999" [(ngModel)]="modelCadastroUsuario.telefone_responsavel" type="text"></p-inputMask>
+                </div>
+                <div class="field col-12 md:col-12">
+                    <label>Telefone do Estabelecimento</label>
+                    <p-inputMask mask="(99) 9999-9999" [(ngModel)]="modelCadastroUsuario.telefone_estabelecimento" type="text"></p-inputMask>
+                    </div>
 
                 <div class="field col-12 md:col-4" style="display: flex;">
                     <div class="flex flex-wrap gap-3">
@@ -33,7 +47,8 @@
                 </div>
 
                 <div class="field col-12 md:col-8">
-                    <p-inputMask mask="99999-999" placeholder="00000-00" [(ngModel)]="modelCadastroUsuario.cep"></p-inputMask>
+                    <p-inputMask mask="999.999.999-99" *ngIf="radioCpfCnpj == 'CPF'" placeholder="000.000.000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
+                    <p-inputMask mask="99.999.999/9999-99" *ngIf="radioCpfCnpj == 'CNPJ'" placeholder="00.000.000/0000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
                 </div>
                 
                 <div class="field col-12 md:col-10">
@@ -74,16 +89,6 @@
                     <input [(ngModel)]="modelCadastroUsuario.complemento" pInputText type="text" />
                 </div>
                 
-
-                    <!-- <div class="field col-12 md:col-8">
-                        <label>Endereço</label>
-                        <input [(ngModel)]="model.email" pInputText id="email1" type="text" />
-                    </div>
-    
-                    <div class="field col-12 md:col-4">
-                        <label>Complemento</label>
-                        <input [(ngModel)]="model.email" pInputText id="email1" type="text" />
-                    </div> -->
 
                     <div class="field col-12 md:col-12">
                         <p-button  [loading]="loading" (click)="salvar()" label="Salvar"></p-button>

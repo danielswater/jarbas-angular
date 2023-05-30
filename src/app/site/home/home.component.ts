@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
     componentRestrictions: { country: 'BR', }
   }
 
-  radioCpfCnpj = "CPF"
+  radioCpfCnpj = "CNPJ"
 
   modelCadastroUsuario: CadastroUsuario = {
     bairro: '',
@@ -40,9 +40,10 @@ export class HomeComponent implements OnInit {
     numero: '',
     razao_social: '',
     senha: '',
+    tipo_documento: '',
     telefone_estabelecimento: '',
     telefone_responsavel: '',
-    geolocalizacao : new GeoPoint(0, 0)
+    geolocalizacao : new GeoPoint(0, 0),
   }
 
   loading: boolean = false;
@@ -108,11 +109,28 @@ export class HomeComponent implements OnInit {
         const location = results[0].geometry.location;
         const latitude = location.lat();
         const longitude = location.lng();
-
+  
         const geopoint = new GeoPoint(latitude, longitude);
         this.modelCadastroUsuario.geolocalizacao = geopoint;
+  
+        // Chamar o método criarUsuario() aqui, após obter a geolocalização
+        this.criarUsuario();
       }
     });
+  }
+
+  criarUsuario() {
+    // Remova a chamada para getGeoLocalizacao() aqui
+  
+    this.loading = true;
+    this.service.criarUsuario(this.modelCadastroUsuario)
+      .then((response) => {
+        console.log(response)
+        this.loading = false;
+      })
+      .catch((error) => {
+        console.log('ERROR', error)
+      });
   }
 
 
@@ -134,23 +152,17 @@ export class HomeComponent implements OnInit {
 
   tipoDoc(){
     console.log(this.radioCpfCnpj)
+    this.modelCadastroUsuario.tipo_documento = this.radioCpfCnpj
   }
 
   salvar() {
     // this.spinner.show()
     this.getGeoLocalizacao()
-    console.log(this.modelCadastroUsuario)
-    return
     this.loading = true;
     this.service.criarUsuario(this.modelCadastroUsuario)
       .then((response) => {
         console.log(response)
-        setTimeout(() => {
           this.loading = false
-        }, 2000);
-        // setTimeout(() => {
-        //   this.spinner.hide()
-        // }, 5000);
       })
       .catch((error) => {
         console.log('ERROR', error)

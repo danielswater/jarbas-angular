@@ -1,6 +1,7 @@
 
 import { NgModule, APP_INITIALIZER  } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
@@ -49,6 +50,7 @@ export function initializeFirebaseApp() {
     AppComponent, NotfoundComponent, HomeComponent
   ],
   imports: [
+    BrowserModule,
     AppRoutingModule,
     AppLayoutModule,
     FormsModule,

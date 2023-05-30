@@ -5,7 +5,8 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, DocumentReference, getDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { setDoc, doc } from 'firebase/firestore';
+import { GeoPoint } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,19 @@ export class UsuariosService {
   }
 
   criarUsuario(usuario: any) {
-    const usersCollection = collection(this.db, 'user');
-    return addDoc(usersCollection, usuario);
+    const usersCollection = collection(this.db, 'usuarios');
+    
+    // Criar um novo documento com um ID gerado automaticamente
+    const newDocRef = doc(usersCollection);
+  
+    // Definir os dados do documento, incluindo a geolocalização
+    const usuarioComGeolocalizacao = {
+      ...usuario,
+      geolocalizacao: new GeoPoint(usuario.geolocalizacao.latitude, usuario.geolocalizacao.longitude)
+    };
+  
+    // Salvar o documento no Firestore
+    return setDoc(newDocRef, usuarioComGeolocalizacao);
   }
 
   obterCidades(estado: string, query: string): Observable<any[]> {
