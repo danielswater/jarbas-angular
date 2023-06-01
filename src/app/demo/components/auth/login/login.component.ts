@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { AuthService } from './service/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -43,6 +44,8 @@ export class LoginComponent implements OnInit {
       })
       .catch((error) => {
         // Erro no login
+        this.spinner.hide()
+        Swal.fire('Erro', `Nenhum usuário encontrado!`, 'error');
         console.error('Erro ao autenticar usuário:', error);
       });
   }
