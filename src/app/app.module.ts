@@ -1,5 +1,6 @@
 
 import { NgModule, APP_INITIALIZER  } from '@angular/core';
+import firebase from 'firebase/compat/app'; 
 import { ReactiveFormsModule } from '@angular/forms';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -43,7 +44,9 @@ import { NovoComponent } from './site/novo/novo.component';
 import { AppRoutingModule } from './app-routing.module';
 
 export function initializeFirebaseApp() {
-  return () => {};
+  return () => {
+    firebase.initializeApp(environment.firebaseConfig); // Inicialize o Firebase aqui
+  };
 }
 
 @NgModule({
