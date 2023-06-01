@@ -1,9 +1,9 @@
 
 import { NgModule, APP_INITIALIZER  } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { ProductService } from './demo/service/product.service';
@@ -17,7 +17,6 @@ import {AngularFireModule} from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { HomeComponent } from './site/home/home.component';
 import { UsuariosService } from './site/home/service/usuarios.service';
-import { initializeApp } from 'firebase/app';
 
 //prime
 import { FormsModule } from '@angular/forms';
@@ -34,26 +33,27 @@ import { InputTextModule } from "primeng/inputtext";
 import { environment } from 'src/environments/environment';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
+
 import { AgmCoreModule } from '@agm/core';
 
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 
-//AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4
 import { NgxSpinnerModule } from "ngx-spinner";
+import { NovoComponent } from './site/novo/novo.component';
+import { AppRoutingModule } from './app-routing.module';
 
 export function initializeFirebaseApp() {
-  return () => initializeApp(environment.firebaseConfig);
+  return () => {};
 }
 
 @NgModule({
   declarations: [
-    AppComponent, NotfoundComponent, HomeComponent
+    AppComponent, NotfoundComponent, HomeComponent, NovoComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    AppLayoutModule,
     FormsModule,
+    AppLayoutModule,
     AutoCompleteModule,
     CalendarModule,
     ChipsModule,
@@ -67,13 +67,15 @@ export function initializeFirebaseApp() {
     ProgressSpinnerModule,
     NgxSpinnerModule,
     RadioButtonModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDubaPuiD4Xlwz5r5gCrhJZvNM6nd_Scc4',
       libraries: ['places']
     }),
-    GooglePlaceModule
+    GooglePlaceModule,
+    AppRoutingModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

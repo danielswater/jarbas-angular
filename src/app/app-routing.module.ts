@@ -1,15 +1,21 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
+
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./layout/app.layout.component";
 import { HomeComponent } from './site/home/home.component';
+import { NovoComponent } from './site/novo/novo.component';
+import { AuthGuard } from './demo/components/auth/login/service/auth.guard';
+
 
 @NgModule({
     imports: [
         RouterModule.forRoot([
           {path: '', component: HomeComponent},
+          {path: 'novo', component: NovoComponent},
             {
                 path: 'admin', component: AppLayoutComponent,
+                canActivate: [AuthGuard],
                 children: [
                     { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
                     { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
@@ -19,7 +25,7 @@ import { HomeComponent } from './site/home/home.component';
                     { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
                 ]
             },
-            { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
+            { path: 'login', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
             { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
             { path: 'notfound', component: NotfoundComponent },
             { path: '**', redirectTo: '/notfound' },

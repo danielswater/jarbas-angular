@@ -8,6 +8,7 @@ import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import 'firebase/firestore';
 import { GeoPoint } from 'firebase/firestore';
 declare var google: any;
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -117,6 +118,7 @@ export class HomeComponent implements OnInit {
           .then((response) => {
             console.log(response)
             this.loading = false;
+            Swal.fire('Seja Bem-vindo', `${this.modelCadastroUsuario.nome_responsavel}, seu cadastro foi efetuado com sucesso!`, 'success');
           })
           .catch((error) => {
             console.log('ERROR', error)
@@ -140,6 +142,18 @@ export class HomeComponent implements OnInit {
     );
 
     return neighborhoodComponent ? neighborhoodComponent.long_name : '';
+  }
+
+  isAlgumCampoVazio(): boolean {
+    for (const key in this.modelCadastroUsuario) {
+      if (this.modelCadastroUsuario.hasOwnProperty(key)) {
+        const value = this.modelCadastroUsuario[key];
+        if (value === '' || value === null || value === undefined) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   tipoDoc(){

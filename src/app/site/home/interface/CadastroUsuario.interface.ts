@@ -15,4 +15,5 @@ export interface CadastroUsuario {
   telefone_estabelecimento: string;
   telefone_responsavel: string;
   geolocalizacao?: firebase.default.firestore.GeoPoint;
+  [key: string]: any;
 }

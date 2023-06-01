@@ -2,7 +2,7 @@
 <div class="grid " style="justify-content: center; margin-top: 30px;">
     <div class="col-12 md:col-6">
         <div class="card">
-            <h5>Teste de Cadastro</h5>
+            <h2>Cadastre-se no Jarbas</h2>
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md:col-12">
                     <label>Razão Social</label>
@@ -24,36 +24,44 @@
                 </div>
 
                 <div class="field col-12 md:col-12">
-                    <label>Telefone Fixo do Responsável</label>
-                    <p-inputMask mask="(99) 99999-9999" [(ngModel)]="modelCadastroUsuario.telefone_responsavel" type="text"></p-inputMask>
+                    <label>Telefone do Responsável</label>
+                    <p-inputMask mask="(99) 99999-9999" [(ngModel)]="modelCadastroUsuario.telefone_responsavel"
+                        type="text"></p-inputMask>
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Telefone do Estabelecimento</label>
-                    <p-inputMask mask="(99) 9999-9999" [(ngModel)]="modelCadastroUsuario.telefone_estabelecimento" type="text"></p-inputMask>
-                    </div>
+                    <p-inputMask mask="(99) 9999-9999" [(ngModel)]="modelCadastroUsuario.telefone_estabelecimento"
+                        type="text"></p-inputMask>
+                </div>
 
                 <div class="field col-12 md:col-4" style="display: flex;">
                     <div class="flex flex-wrap gap-3">
                         <div class="flex align-items-center">
-                            <p-radioButton name="cpf_cnpj" value="CPF" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj" inputId="cpf_cnpj1"></p-radioButton>
+                            <p-radioButton name="cpf_cnpj" value="CPF" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj"
+                                inputId="cpf_cnpj1"></p-radioButton>
                             <label for="cpf_cnpj1" class="ml-2">CPF</label>
                         </div>
-                        
+
                         <div class="flex align-items-center">
-                            <p-radioButton name="cpf_cnpj" value="CNPJ" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj" inputId="cpf_cnpj2"></p-radioButton>
+                            <p-radioButton name="cpf_cnpj" value="CNPJ" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj"
+                                inputId="cpf_cnpj2"></p-radioButton>
                             <label for="cpf_cnpj2" class="ml-2">CNPJ</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="field col-12 md:col-8">
-                    <p-inputMask mask="999.999.999-99" *ngIf="radioCpfCnpj == 'CPF'" placeholder="000.000.000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
-                    <p-inputMask mask="99.999.999/9999-99" *ngIf="radioCpfCnpj == 'CNPJ'" placeholder="00.000.000/0000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
+                    <p-inputMask mask="999.999.999-99" *ngIf="radioCpfCnpj == 'CPF'" placeholder="000.000.000-00"
+                        [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
+                    <p-inputMask mask="99.999.999/9999-99" *ngIf="radioCpfCnpj == 'CNPJ'"
+                        placeholder="00.000.000/0000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
                 </div>
-                
+
                 <div class="field col-12 md:col-10">
                     <label>Cidade <span></span></label>
-                    <p-autoComplete [(ngModel)]="cidadeSelecionada" [dropdown]="true" [suggestions]="cidades" field="label" (completeMethod)="buscarCidades($event)" (onSelect)="selecionarCidade($event)"></p-autoComplete>
+                    <p-autoComplete [(ngModel)]="cidadeSelecionada" [dropdown]="true" [suggestions]="cidades"
+                        field="label" (completeMethod)="buscarCidades($event)"
+                        (onSelect)="selecionarCidade($event)"></p-autoComplete>
 
                 </div>
 
@@ -64,9 +72,9 @@
 
                 <div class="field col-12 md:col-8">
                     <label>Logradouro</label>
-                    <input id="inputElement" ngx-google-places-autocomplete
-                    [options]="options"
-                    (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastroUsuario.logradouro" id="logradouro" pInputText type="text" />
+                    <input id="inputElement" ngx-google-places-autocomplete [options]="options"
+                        (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastroUsuario.logradouro"
+                        id="logradouro" pInputText type="text" />
                 </div>
 
                 <div class="field col-12 md:col-4">
@@ -75,8 +83,9 @@
                 </div>
 
                 <div class="field col-12 md:col-4">
-                    <label>CEP</label>				
-                    <p-inputMask mask="99999-999" placeholder="00000-00" [(ngModel)]="modelCadastroUsuario.cep"></p-inputMask>
+                    <label>CEP</label>
+                    <p-inputMask mask="99999-999" placeholder="00000-00"
+                        [(ngModel)]="modelCadastroUsuario.cep"></p-inputMask>
                 </div>
 
                 <div class="field col-12 md:col-4">
@@ -88,11 +97,12 @@
                     <label>Complemento</label>
                     <input [(ngModel)]="modelCadastroUsuario.complemento" pInputText type="text" />
                 </div>
-                
 
-                    <div class="field col-12 md:col-12">
-                        <p-button  [loading]="loading" (click)="salvar()" label="Salvar"></p-button>
-                    </div>
+
+                <div class="field col-12 md:col-12">
+                    <p-button [disabled]="isAlgumCampoVazio()" [loading]="loading" (click)="salvar()"
+                        label="Salvar"></p-button>
+                </div>
             </div>
         </div>
     </div>
