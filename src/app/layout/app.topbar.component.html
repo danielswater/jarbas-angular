@@ -13,17 +13,23 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button (click)="logout()" class="p-link layout-topbar-button">
+        <button  class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
-            <span>Calendar</span>
         </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
+
+        <button class="p-link layout-topbar-button" (click)="overlayPanel.toggle($event)">
+            <i class="pi pi-bell text-3xl" pBadge value="2"></i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
+
+        <button (click)="logout()" class="p-link layout-topbar-button" [routerLink]="'/documentation'">
+            <i class="pi pi-power-off"></i>
         </button>
     </div>
 </div>
+
+<p-overlayPanel #overlayPanel [showTransitionOptions]="'1ms'" [hideTransitionOptions]="'1ms'">
+    <ul>
+        <li><!-- AQUI EU GOSTARIA DE EXIBIR A MENSAGEM: O USUARIO 'NOME_DO_USUARIO' ACABOU DE SE CADASTRAR--></li>
+        
+    </ul>
+</p-overlayPanel>
