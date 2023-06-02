@@ -13,6 +13,9 @@ import { UsuariosService } from './../site/home/service/usuarios.service';
 })
 export class AppTopBarComponent implements OnInit {
 
+  notificacaoCounter: number;
+  notificacoes: any[];
+
   @ViewChild('overlayPanel') overlayPanel: OverlayPanel;
 
     items!: MenuItem[];
@@ -29,9 +32,16 @@ export class AppTopBarComponent implements OnInit {
 
     ngOnInit(): void {
       this.service.getContadorUsuarios().subscribe(data => {
-        console.log('data', data)
-      })
+        console.log('Contador de usuários:', data);
+        this.notificacaoCounter = data;
+      });
+    
+      this.service.getNotificacoes().subscribe(data => {
+        console.log('Notificações:', data);
+        this.notificacoes = data;
+      });
     }
+    
 
     toggleNotifications(): void {
       this.showNotifications = !this.showNotifications;

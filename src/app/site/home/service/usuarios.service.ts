@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, DocumentReference, getDoc, updateDoc, increment, onSnapshot, QueryDocumentSnapshot, doc } from 'firebase/firestore';
@@ -12,7 +12,7 @@ import { getDatabase, ref, set, increment as rtdbIncrement, onValue } from 'fire
 @Injectable({
   providedIn: 'root'
 })
-export class UsuariosService {
+export class UsuariosService implements OnDestroy {
 
   private db = getFirestore();
   private dbRealtime = getDatabase();
@@ -41,6 +41,7 @@ export class UsuariosService {
     // Criar notificação de usuário criado
     const notificacao = {
       mensagem: 'Novo usuário criado',
+      nome: usuario.nome_fantasia, // Adicione o nome do usuário na notificação
       data: new Date()
     };
     await set(this.notificacoesRef, notificacao);
@@ -56,13 +57,28 @@ export class UsuariosService {
     );
   }
 
+  getNotificacoes(): Observable<any[]> {
+    const orderedNotificacoesQuery = ref(this.dbRealtime, 'notificacoes');
+
+    return new Observable<any[]>((observer) => {
+      onValue(orderedNotificacoesQuery, (snapshot) => {
+        const notificacoes: any[] = [];
+        snapshot.forEach((childSnapshot) => {
+          const notificacao = childSnapshot.val();
+          notificacoes.push(notificacao);
+        });
+        observer.next(notificacoes);
+      });
+    });
+  }
   getContadorUsuarios(): Observable<number> {
     return new Observable<number>((observer) => {
-      this.contadorUnsubscribe = onValue(this.contadorRef, (snapshot) => {
-        const count = snapshot.val();
-        this.contadorSubject.next(count ?? 0);
+      const contadorRef = ref(this.dbRealtime, 'contador/usuarios');
+  
+      onValue(contadorRef, (snapshot) => {
+        const contador = snapshot.val();
+        observer.next(contador);
       });
-      return this.contadorSubject.subscribe(observer);
     });
   }
 
