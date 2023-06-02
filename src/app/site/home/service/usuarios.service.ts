@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, DocumentReference, getDoc , updateDoc, increment} from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { getFirestore, collection, addDoc, DocumentReference, getDoc, updateDoc, increment, onSnapshot, QueryDocumentSnapshot, doc } from 'firebase/firestore';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc } from 'firebase/firestore';
 import { GeoPoint } from 'firebase/firestore';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { getDatabase, ref, set, increment as rtdbIncrement, onValue } from 'firebase/database';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +15,35 @@ import { getDatabase, ref, onValue } from 'firebase/database';
 export class UsuariosService {
 
   private db = getFirestore();
+  private dbRealtime = getDatabase();
+  private usuariosCollection = collection(this.db, 'usuarios');
+  private contadorRef = ref(this.dbRealtime, 'contador/usuarios');
+  private notificacoesRef = ref(this.dbRealtime, 'notificacoes');
+
+  private contadorSubject = new Subject<number>();
+  private contadorUnsubscribe: any;
 
   constructor(private http: HttpClient) {
     initializeApp(environment.firebaseConfig);
   }
 
-  criarUsuario(usuario: any) {
-    const usersCollection = collection(this.db, 'usuarios');
-    const newDocRef = doc(usersCollection);
+  async criarUsuario(usuario: any): Promise<void> {
+    const newDocRef = doc(this.usuariosCollection);
     const usuarioComGeolocalizacao = {
       ...usuario,
       geolocalizacao: new GeoPoint(usuario.geolocalizacao.latitude, usuario.geolocalizacao.longitude)
     };
-    return setDoc(newDocRef, usuarioComGeolocalizacao);
+    await setDoc(newDocRef, usuarioComGeolocalizacao);
+
+    // Atualizar o contador de cadastros no Realtime Database
+    await set(this.contadorRef, rtdbIncrement(1));
+
+    // Criar notificação de usuário criado
+    const notificacao = {
+      mensagem: 'Novo usuário criado',
+      data: new Date()
+    };
+    await set(this.notificacoesRef, notificacao);
   }
 
   obterCidades(estado: string, query: string): Observable<any[]> {
@@ -40,48 +56,19 @@ export class UsuariosService {
     );
   }
 
+  getContadorUsuarios(): Observable<number> {
+    return new Observable<number>((observer) => {
+      this.contadorUnsubscribe = onValue(this.contadorRef, (snapshot) => {
+        const count = snapshot.val();
+        this.contadorSubject.next(count ?? 0);
+      });
+      return this.contadorSubject.subscribe(observer);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.contadorUnsubscribe) {
+      this.contadorUnsubscribe();
+    }
+  }
 }
-
-
-
-// import { Injectable } from '@angular/core';
-// import { environment } from 'src/environments/environment';
-// import { initializeApp } from 'firebase/app';
-// import { getDatabase, ref, set, increment } from 'firebase/database';
-// import { Observable } from 'rxjs';
-// import { map } from 'rxjs/operators';
-// import { HttpClient } from '@angular/common/http';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class UsuariosService {
-
-//   private db = getDatabase();
-
-//   constructor(private http: HttpClient) {
-//     initializeApp(environment.firebaseConfig);
-//   }
-
-//   criarUsuario(usuario: any): Promise<void> {
-//     const usersRef = ref(this.db, 'usuarios');
-//     const contadorRef = ref(this.db, 'contador/usuarios');
-
-//     // Atualizar o contador de cadastros
-//     return set(contadorRef, increment(1))
-//       .then(() => {
-//         // Salvar o usuário no Realtime Database
-//         return set(usersRef, usuario);
-//       });
-//   }
-
-//   obterCidades(estado: string, query: string): Observable<any[]> {
-//     const url = `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`;
-//     return this.http.get<any[]>(url).pipe(
-//       map((cidades: any[]) => {
-//         const cidadesFiltradas = cidades.filter(cidade => cidade.nome.toLowerCase().includes(query.toLowerCase()));
-//         return cidadesFiltradas.map(cidade => ({ label: cidade.nome, value: cidade.nome }));
-//       })
-//     );
-//   }
-// }
