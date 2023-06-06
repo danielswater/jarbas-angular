@@ -1,6 +1,6 @@
 import { MapsAPILoader } from '@agm/core';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
@@ -9,6 +9,7 @@ import { GeoPoint } from 'firebase/firestore';
 declare var google: any;
 import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AutoComplete } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-home',
@@ -19,10 +20,12 @@ export class HomeComponent implements OnInit {
 
   form: FormGroup;
 
+  @ViewChild('autocomplete') autocomplete:AutoComplete;
+
   isApiLoaded = false;
   cidadeSelecionada: any;
   cidades: any[] = [];
-
+  suggestion: any
   options: any = {
     componentRestrictions: { country: 'BR', }
   }
@@ -71,6 +74,28 @@ export class HomeComponent implements OnInit {
       this.cidades = cidades;
     });
   }
+
+  resetFormValues() {
+    this.form = this.formBuilder.group({
+      bairro: ['', Validators.required],
+      cep: ['', Validators.required],
+      cidade: ['', Validators.required],
+      complemento: ['', Validators.required],
+      cpf_cnpj: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      logradouro: ['', Validators.required],
+      estado: ['SP',Validators.required],
+      nome_fantasia: ['', Validators.required],
+      nome_responsavel: ['', Validators.required],
+      numero: ['', Validators.required],
+      razao_social: ['', Validators.required],
+      tipo_documento: ['CNPJ', Validators.required],
+      telefone_estabelecimento: ['', Validators.required],
+      telefone_responsavel: ['', Validators.required],
+      geolocalizacao: ['']
+    });
+  }
+  
 
 
   selecionarCidade(event: any): void {
@@ -136,7 +161,10 @@ export class HomeComponent implements OnInit {
             console.log(response)
             this.spinner.hide()
             Swal.fire('Seja Bem-vindo', `${this.form.controls['nome_responsavel'].value}, seu cadastro foi efetuado com sucesso!`, 'success');
-            this.form.reset();
+            this.autocomplete.hide()
+            this.resetFormValues();
+            this.clearValue()
+            
           })
           .catch((error) => {
             this.spinner.hide()
@@ -151,6 +179,7 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+  
   extractStreetName(address: Address): string {
     const routeComponent = address.address_components.find(component =>
       component.types.includes('route')
@@ -175,6 +204,10 @@ export class HomeComponent implements OnInit {
     } else if (tipoDoc === 'CNPJ') {
       this.form.get('cpf_cnpj')?.setValue(''); // Limpa o campo
     }
+  }
+
+  clearValue(){
+    this.suggestion = null;
   }
   
   getMask(): string {

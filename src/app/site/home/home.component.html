@@ -61,7 +61,7 @@
     
                     <div class="field col-12 md:col-10">
                         <label>Cidade <span></span></label>
-                        <p-autoComplete name="cidade" id="cidade" [required]="true" [dropdown]="true" [suggestions]="cidades"
+                        <p-autoComplete #autocomplete name="cidade" id="cidade" [required]="true" (onClear)="clearValue()" [ngModelOptions]="{standalone: true}" [(ngModel)]="suggestion" [dropdown]="true" [suggestions]="cidades"
                             field="label" (completeMethod)="buscarCidades($event)"
                             (onSelect)="selecionarCidade($event)"></p-autoComplete>
     
