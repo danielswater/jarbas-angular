@@ -122,7 +122,16 @@ export class HomeComponent implements OnInit {
         //this.modelCadastroUsuario.geolocalizacao = geopoint;
         this.form.patchValue({geolocalizacao: geopoint})
 
-        this.service.criarUsuario(this.form.value)
+        const usuario = this.form.value;
+
+        this.service.verificarExistenciaCampos(usuario)
+        .then((response) => {
+          if (response) {
+            Swal.fire('Ocorreu um erro', 'CPF, CNPJ, ou Razão Social já cadastrados', 'error');
+           this.spinner.hide()
+            return;
+          }
+          this.service.criarUsuario(this.form.value)
           .then((response) => {
             console.log(response)
             this.spinner.hide()
@@ -133,6 +142,12 @@ export class HomeComponent implements OnInit {
             this.spinner.hide()
             console.log('ERROR', error)
           });
+        })
+        .catch((error) => {
+          console.log('Erro ao verificar existência de cadastros:', error);
+        });
+
+        
       }
     });
   }

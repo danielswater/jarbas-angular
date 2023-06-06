@@ -3,6 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, DocumentReference, getDoc, updateDoc, increment, onSnapshot, QueryDocumentSnapshot, doc } from 'firebase/firestore';
+import { query, where, getDocs } from 'firebase/firestore';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { setDoc } from 'firebase/firestore';
@@ -27,6 +28,29 @@ export class UsuariosService implements OnDestroy {
   constructor(private http: HttpClient) {
     initializeApp(environment.firebaseConfig);
   }
+
+
+  async verificarExistenciaCampos(usuario: any): Promise<boolean> {
+    const { cpf_cnpj, razao_social } = usuario;
+  
+    // Verificar se o CPF/CNPJ já está cadastrado
+    const queryCpfCnpj = query(this.usuariosCollection, where('cpf_cnpj', '==', cpf_cnpj));
+    const querySnapshotCpfCnpj = await getDocs(queryCpfCnpj);
+    if (!querySnapshotCpfCnpj.empty) {
+      return true; // CPF/CNPJ já cadastrado
+    }
+  
+    // Verificar se a razão social já está cadastrada
+    const queryRazaoSocial = query(this.usuariosCollection, where('razao_social', '==', razao_social));
+    const querySnapshotRazaoSocial = await getDocs(queryRazaoSocial);
+    if (!querySnapshotRazaoSocial.empty) {
+      return true; // Razão social já cadastrada
+    }
+  
+    return false; // Nenhum campo duplicado encontrado
+  }
+  
+  
 
   async criarUsuario(usuario: any): Promise<void> {
 
