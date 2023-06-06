@@ -1,6 +1,6 @@
 import { MapsAPILoader } from '@agm/core';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
@@ -19,8 +19,6 @@ import { AutoComplete } from 'primeng/autocomplete';
 export class HomeComponent implements OnInit {
 
   form: FormGroup;
-
-  @ViewChild('autocomplete') autocomplete:AutoComplete;
 
   isApiLoaded = false;
   cidadeSelecionada: any;
@@ -161,7 +159,6 @@ export class HomeComponent implements OnInit {
             console.log(response)
             this.spinner.hide()
             Swal.fire('Seja Bem-vindo', `${this.form.controls['nome_responsavel'].value}, seu cadastro foi efetuado com sucesso!`, 'success');
-            this.autocomplete.hide()
             this.resetFormValues();
             this.clearValue()
             
@@ -206,9 +203,15 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  clearValue(){
+  clearValue() {
     this.suggestion = null;
+    const cidadeControl = this.form.get('cidade');
+    if (cidadeControl) {
+      cidadeControl.clearValidators();
+      cidadeControl.updateValueAndValidity();
+    }
   }
+  
   
   getMask(): string {
     const tipoDoc = this.form.get('tipo_documento')?.value;
