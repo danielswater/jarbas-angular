@@ -9,7 +9,6 @@ import { GeoPoint } from 'firebase/firestore';
 declare var google: any;
 import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AutoComplete } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-home',
