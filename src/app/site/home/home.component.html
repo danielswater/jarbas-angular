@@ -1,109 +1,110 @@
-<!-- <ngx-spinner type="ball-scale-multiple"></ngx-spinner> -->
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
 <div class="grid " style="justify-content: center; margin-top: 30px;">
     <div class="col-12 md:col-6">
         <div class="card">
             <h2>Cadastre-se no Jarbas</h2>
-            <div class="p-fluid p-formgrid grid">
-                <div class="field col-12 md:col-12">
-                    <label>Razão Social</label>
-                    <input [(ngModel)]="modelCadastroUsuario.razao_social" pInputText type="text" />
-                </div>
-                <div class="field col-12 md:col-12">
-                    <label>Nome Fantasia</label>
-                    <input [(ngModel)]="modelCadastroUsuario.nome_fantasia" pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-12">
-                    <label>Nome do Responsável</label>
-                    <input [(ngModel)]="modelCadastroUsuario.nome_responsavel" pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-12">
-                    <label>email</label>
-                    <input [(ngModel)]="modelCadastroUsuario.email" pInputText type="email" />
-                </div>
-
-                <div class="field col-12 md:col-12">
-                    <label>Telefone do Responsável</label>
-                    <p-inputMask mask="(99) 99999-9999" [(ngModel)]="modelCadastroUsuario.telefone_responsavel"
-                        type="text"></p-inputMask>
-                </div>
-                <div class="field col-12 md:col-12">
-                    <label>Telefone do Estabelecimento</label>
-                    <p-inputMask mask="(99) 9999-9999" [(ngModel)]="modelCadastroUsuario.telefone_estabelecimento"
-                        type="text"></p-inputMask>
-                </div>
-
-                <div class="field col-12 md:col-4" style="display: flex;">
-                    <div class="flex flex-wrap gap-3">
-                        <div class="flex align-items-center">
-                            <p-radioButton name="cpf_cnpj" value="CPF" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj"
-                                inputId="cpf_cnpj1"></p-radioButton>
-                            <label for="cpf_cnpj1" class="ml-2">CPF</label>
-                        </div>
-
-                        <div class="flex align-items-center">
-                            <p-radioButton name="cpf_cnpj" value="CNPJ" (click)="tipoDoc()" [(ngModel)]="radioCpfCnpj"
-                                inputId="cpf_cnpj2"></p-radioButton>
-                            <label for="cpf_cnpj2" class="ml-2">CNPJ</label>
+            <form [formGroup]="form" (ngSubmit)="submitForm()">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-12">
+                        <label>Razão Social</label>
+                        <input formControlName="razao_social" name="razao_social" id="razao_social" pInputText type="text" />
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label>Nome Fantasia</label>
+                        <input formControlName="nome_fantasia" name="nome_fantasia" id="nome_fantasia" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-12">
+                        <label>Nome do Responsável</label>
+                        <input formControlName="nome_responsavel" name="nome_responsavel" id="nome_responsavel" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-12">
+                        <label>email</label>
+                        <input formControlName="email" name="email" id="email" pInputText type="email" />
+                    </div>
+    
+                    <div class="field col-12 md:col-12">
+                        <label>Telefone do Responsável</label>
+                        <p-inputMask mask="(99) 99999-9999" formControlName="telefone_responsavel" name="telefone_responsavel" id="telefone_responsavel"
+                            type="text"></p-inputMask>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label>Telefone do Estabelecimento</label>
+                        <p-inputMask mask="(99) 9999-9999" formControlName="telefone_estabelecimento" name="telefone_estabelecimento" id="telefone_estabelecimento"
+                            type="text"></p-inputMask>
+                    </div>
+    
+                    <div class="field col-12 md:col-4" style="display: flex;">
+                        <div class="flex flex-wrap gap-3">
+                            <div class="flex align-items-center">
+                                <p-radioButton name="cpf_cnpj" value="CPF" formControlName="tipo_documento" (change)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
+                                    inputId="cpf_cnpj1"></p-radioButton>
+                                <label for="cpf_cnpj1" class="ml-2">CPF</label>
+                            </div>
+    
+                            <div class="flex align-items-center">
+                                <p-radioButton name="cpf_cnpj" value="CNPJ" formControlName="tipo_documento" (change)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
+                                    inputId="cpf_cnpj2"></p-radioButton>
+                                <label for="cpf_cnpj2" class="ml-2">CNPJ</label>
+                            </div>
+                            <!--
+                                  <input type="radio" name="tipoDoc" value="CPF" formControlName="tipo_documento" (change)="changeTipoDoc()"> CPF
+  <input type="radio" name="tipoDoc" value="CNPJ" formControlName="tipo_documento" (change)="changeTipoDoc()"> CNPJ
+                            -->
                         </div>
                     </div>
+    
+                    <div class="field col-12 md:col-8">
+                        <p-inputMask formControlName="cpf_cnpj" name="cpf_cnpj" id="cpf_cnpj" [mask]="getMask()"></p-inputMask>
+                    </div>
+    
+                    <div class="field col-12 md:col-10">
+                        <label>Cidade <span></span></label>
+                        <p-autoComplete name="cidade" id="cidade" [required]="true" [dropdown]="true" [suggestions]="cidades"
+                            field="label" (completeMethod)="buscarCidades($event)"
+                            (onSelect)="selecionarCidade($event)"></p-autoComplete>
+    
+                    </div>
+    
+                    <div class="field col-12 md:col-2">
+                        <label>Estado</label>
+                        <input value="SP" formControlName="estado" [readOnly]="true" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-8">
+                        <label>Logradouro</label>
+                        <input id="inputElement" ngx-google-places-autocomplete [options]="options"
+                            (onAddressChange)="handleAddressChange($event)" formControlName="logradouro" name="logradouro" id="logradouro" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-4">
+                        <label>Bairro</label>
+                        <input formControlName="bairro" name="bairro" id="bairro" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-4">
+                        <label>CEP</label>
+                        <p-inputMask mask="99999-999" placeholder="00000-00" formControlName="cep" name="cep" id="cep"></p-inputMask>
+                    </div>
+    
+                    <div class="field col-12 md:col-4">
+                        <label>Número</label>
+                        <input formControlName="numero" name="numero" id="numero" pInputText type="text" />
+                    </div>
+    
+                    <div class="field col-12 md:col-4">
+                        <label>Complemento</label>
+                        <input formControlName="complemento" name="complemento" id="complemento" pInputText type="text" />
+                    </div>
+    
+    
+                    <div class="field col-12 md:col-12">
+                        <p-button [disabled]="!form.valid" type="submit" label="Salvar"></p-button>
+                    </div>
                 </div>
+            </form>
 
-                <div class="field col-12 md:col-8">
-                    <p-inputMask mask="999.999.999-99" *ngIf="radioCpfCnpj == 'CPF'" placeholder="000.000.000-00"
-                        [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
-                    <p-inputMask mask="99.999.999/9999-99" *ngIf="radioCpfCnpj == 'CNPJ'"
-                        placeholder="00.000.000/0000-00" [(ngModel)]="modelCadastroUsuario.cpf_cnpj"></p-inputMask>
-                </div>
-
-                <div class="field col-12 md:col-10">
-                    <label>Cidade <span></span></label>
-                    <p-autoComplete [(ngModel)]="cidadeSelecionada" [dropdown]="true" [suggestions]="cidades"
-                        field="label" (completeMethod)="buscarCidades($event)"
-                        (onSelect)="selecionarCidade($event)"></p-autoComplete>
-
-                </div>
-
-                <div class="field col-12 md:col-2">
-                    <label>Estado</label>
-                    <input value="SP" readonly disabled pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-8">
-                    <label>Logradouro</label>
-                    <input id="inputElement" ngx-google-places-autocomplete [options]="options"
-                        (onAddressChange)="handleAddressChange($event)" [(ngModel)]="modelCadastroUsuario.logradouro"
-                        id="logradouro" pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label>Bairro</label>
-                    <input [(ngModel)]="modelCadastroUsuario.bairro" pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label>CEP</label>
-                    <p-inputMask mask="99999-999" placeholder="00000-00"
-                        [(ngModel)]="modelCadastroUsuario.cep"></p-inputMask>
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label>Número</label>
-                    <input [(ngModel)]="modelCadastroUsuario.numero" pInputText type="text" />
-                </div>
-
-                <div class="field col-12 md:col-4">
-                    <label>Complemento</label>
-                    <input [(ngModel)]="modelCadastroUsuario.complemento" pInputText type="text" />
-                </div>
-
-
-                <div class="field col-12 md:col-12">
-                    <p-button [disabled]="isAlgumCampoVazio()" [loading]="loading" (click)="salvar()"
-                        label="Salvar"></p-button>
-                </div>
-            </div>
         </div>
     </div>
 </div>

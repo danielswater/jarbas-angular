@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
-import { CadastroUsuario } from './interface/CadastroUsuario.interface';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import 'firebase/firestore';
 import { GeoPoint } from 'firebase/firestore';
 declare var google: any;
 import Swal from 'sweetalert2';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +16,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  form: FormGroup;
 
   isApiLoaded = false;
   cidadeSelecionada: any;
@@ -27,37 +29,38 @@ export class HomeComponent implements OnInit {
 
   radioCpfCnpj = "CNPJ"
 
-  modelCadastroUsuario: CadastroUsuario = {
-    bairro: '',
-    cep: '',
-    cidade: '',
-    complemento: '',
-    cpf_cnpj: '',
-    email: '',
-    logradouro: '',
-    estado: 'SP',
-    nome_fantasia: '',
-    nome_responsavel: '',
-    numero: '',
-    razao_social: '',
-    tipo_documento: 'CNPJ',
-    telefone_estabelecimento: '',
-    telefone_responsavel: '',
-    geolocalizacao: new GeoPoint(0, 0),
-  }
-
   loading: boolean = false;
 
   constructor
     (private service: UsuariosService,
       private spinner: NgxSpinnerService,
       private mapsAPILoader: MapsAPILoader,
-      private httpClient: HttpClient
+      private httpClient: HttpClient,
+      private formBuilder: FormBuilder
     ) { }
 
   ngOnInit(): void {
     this.mapsAPILoader.load().then(() => {
       this.isApiLoaded = true
+    })
+
+    this.form = this.formBuilder.group({
+      bairro: ['', Validators.required],
+      cep: ['', Validators.required],
+      cidade: ['', Validators.required],
+      complemento: ['', Validators.required],
+      cpf_cnpj: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      logradouro: ['', Validators.required],
+      estado: ['SP',Validators.required],
+      nome_fantasia: ['', Validators.required],
+      nome_responsavel: ['', Validators.required],
+      numero: ['', Validators.required],
+      razao_social: ['', Validators.required],
+      tipo_documento: ['CNPJ', Validators.required],
+      telefone_estabelecimento: ['', Validators.required],
+      telefone_responsavel: ['', Validators.required],
+      geolocalizacao: ['']
     })
   }
 
@@ -71,15 +74,17 @@ export class HomeComponent implements OnInit {
 
 
   selecionarCidade(event: any): void {
-    this.modelCadastroUsuario.cidade = event.value
-    console.log(this.modelCadastroUsuario)
+    //this.modelCadastroUsuario.cidade = event.value
+    this.form.patchValue({cidade: event.value})
   }
 
   handleAddressChange(address: Address) {
     const streetName = this.extractStreetName(address);
-    this.modelCadastroUsuario.logradouro = streetName
+    //this.modelCadastroUsuario.logradouro = streetName
+    this.form.patchValue({logradouro: streetName})
     const neighborhood = this.extractNeighborhood(address);
-    this.modelCadastroUsuario.bairro = neighborhood
+    //this.modelCadastroUsuario.bairro = neighborhood
+    this.form.patchValue({bairro: neighborhood})
     this.getCEP(address);
   }
 
@@ -96,13 +101,16 @@ export class HomeComponent implements OnInit {
         );
 
         const cep = cepComponent ? cepComponent.long_name : '';
-        this.modelCadastroUsuario.cep = cep;
+        //this.modelCadastroUsuario.cep = cep;
+        this.form.patchValue({cep: cep})
       }
     });
   }
 
-  salvar(){
-    const endereco = `${this.modelCadastroUsuario.logradouro}, ${this.modelCadastroUsuario.numero} - ${this.modelCadastroUsuario.bairro}, ${this.modelCadastroUsuario.cidade} - SP, ${this.modelCadastroUsuario.cep}, Brasil`;
+  submitForm(){
+    this.spinner.show()
+    const endereco = `${this.form.controls['logradouro'].value}, ${this.form.controls['numero'].value} - ${this.form.controls['bairro'].value}, ${this.form.controls['cidade'].value} - SP, ${this.form.controls['cep'].value}, Brasil`;
+
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address: endereco }, (results: any, status: any) => {
       if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
@@ -111,60 +119,23 @@ export class HomeComponent implements OnInit {
         const longitude = location.lng();
 
         const geopoint = new GeoPoint(latitude, longitude);
-        this.modelCadastroUsuario.geolocalizacao = geopoint;
+        //this.modelCadastroUsuario.geolocalizacao = geopoint;
+        this.form.patchValue({geolocalizacao: geopoint})
 
-        this.loading = true;
-        if(!this.isValidEmail(this.modelCadastroUsuario.email)){
-          this.loading = false;
-          Swal.fire('Ops', `Preencha com um email válido!`, 'error');
-          return
-        }
-        this.service.criarUsuario(this.modelCadastroUsuario)
+        this.service.criarUsuario(this.form.value)
           .then((response) => {
             console.log(response)
-            this.loading = false;
-            Swal.fire('Seja Bem-vindo', `${this.modelCadastroUsuario.nome_responsavel}, seu cadastro foi efetuado com sucesso!`, 'success');
+            this.spinner.hide()
+            Swal.fire('Seja Bem-vindo', `${this.form.controls['nome_responsavel'].value}, seu cadastro foi efetuado com sucesso!`, 'success');
+            this.form.reset();
           })
           .catch((error) => {
+            this.spinner.hide()
             console.log('ERROR', error)
           });
       }
     });
   }
-
-  // salvar() {
-  //   const endereco = `${this.modelCadastroUsuario.logradouro}, ${this.modelCadastroUsuario.numero} - ${this.modelCadastroUsuario.bairro}, ${this.modelCadastroUsuario.cidade} - SP, ${this.modelCadastroUsuario.cep}, Brasil`;
-  //   const geocoder = new google.maps.Geocoder();
-  //   geocoder.geocode({ address: endereco }, (results: any, status: any) => {
-  //     if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-  //       const location = results[0].geometry.location;
-  //       const latitude = location.lat();
-  //       const longitude = location.lng();
-
-  //       const geopoint = new GeoPoint(latitude, longitude);
-  //       this.modelCadastroUsuario.geolocalizacao = geopoint;
-
-  //       this.loading = true;
-  //       if (!this.isValidEmail(this.modelCadastroUsuario.email)) {
-  //         this.loading = false;
-  //         Swal.fire('Ops', `Preencha com um email válido!`, 'error');
-  //         return;
-  //       }
-  //       this.service.criarUsuario(this.modelCadastroUsuario)
-  //         .then((docRef) => {
-  //           console.log('Usuário salvo com sucesso:', docRef);
-  //           this.loading = false;
-  //           Swal.fire('Seja Bem-vindo', `${this.modelCadastroUsuario.nome_responsavel}, seu cadastro foi efetuado com sucesso!`, 'success');
-  //         })
-  //         .catch((error) => {
-  //           console.log('Erro ao salvar usuário:', error);
-  //         });
-  //     }
-  //   });
-  // }
-
-
-
   extractStreetName(address: Address): string {
     const routeComponent = address.address_components.find(component =>
       component.types.includes('route')
@@ -181,27 +152,20 @@ export class HomeComponent implements OnInit {
     return neighborhoodComponent ? neighborhoodComponent.long_name : '';
   }
 
-  isAlgumCampoVazio(): boolean {
-    for (const key in this.modelCadastroUsuario) {
-      if (this.modelCadastroUsuario.hasOwnProperty(key)) {
-        const value = this.modelCadastroUsuario[key];
-        if (value === '' || value === null || value === undefined) {
-          return true;
-        }
-      }
+  changeTipoDoc() {
+    const tipoDoc = this.form.get('tipo_documento')?.value;
+  
+    if (tipoDoc === 'CPF') {
+      this.form.get('cpf_cnpj')?.setValue(''); // Limpa o campo
+    } else if (tipoDoc === 'CNPJ') {
+      this.form.get('cpf_cnpj')?.setValue(''); // Limpa o campo
     }
-    return false;
   }
-
-  isValidEmail(email: string) {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return emailRegex.test(email);
-  }
-
-
-  tipoDoc() {
-    console.log(this.radioCpfCnpj)
-    this.modelCadastroUsuario.tipo_documento = this.radioCpfCnpj
+  
+  getMask(): string {
+    const tipoDoc = this.form.get('tipo_documento')?.value;
+  
+    return tipoDoc === 'CPF' ? '999.999.999-99' : '99.999.999/9999-99';
   }
 
 }

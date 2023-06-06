@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { setDoc } from 'firebase/firestore';
 import { GeoPoint } from 'firebase/firestore';
+import { push } from 'firebase/database';
 import { getDatabase, ref, set, increment as rtdbIncrement, onValue } from 'firebase/database';
 
 @Injectable({
@@ -28,23 +29,27 @@ export class UsuariosService implements OnDestroy {
   }
 
   async criarUsuario(usuario: any): Promise<void> {
+
     const newDocRef = doc(this.usuariosCollection);
     const usuarioComGeolocalizacao = {
       ...usuario,
       geolocalizacao: new GeoPoint(usuario.geolocalizacao.latitude, usuario.geolocalizacao.longitude)
     };
     await setDoc(newDocRef, usuarioComGeolocalizacao);
-
+  
     // Atualizar o contador de cadastros no Realtime Database
     await set(this.contadorRef, rtdbIncrement(1));
-
+  
     // Criar notificação de usuário criado
     const notificacao = {
       mensagem: 'Novo usuário criado',
       nome: usuario.nome_fantasia, // Adicione o nome do usuário na notificação
       data: new Date()
     };
-    await set(this.notificacoesRef, notificacao);
+    
+    const notificacoesRef = ref(this.dbRealtime, 'notificacoes');
+    const notificacaoRef = push(notificacoesRef);
+    await set(notificacaoRef, notificacao);
   }
 
   obterCidades(estado: string, query: string): Observable<any[]> {
