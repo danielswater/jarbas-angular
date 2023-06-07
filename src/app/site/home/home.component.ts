@@ -9,6 +9,7 @@ import { GeoPoint } from 'firebase/firestore';
 declare var google: any;
 import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class HomeComponent implements OnInit {
 
   form: FormGroup;
+
+  deviceInfo:any;
 
   isApiLoaded = false;
   cidadeSelecionada: any;
@@ -36,8 +39,11 @@ export class HomeComponent implements OnInit {
       private spinner: NgxSpinnerService,
       private mapsAPILoader: MapsAPILoader,
       private httpClient: HttpClient,
-      private formBuilder: FormBuilder
-    ) { }
+      private formBuilder: FormBuilder,
+      private deviceService: DeviceDetectorService
+    ) {
+      this.epicFunction();
+    }
 
   ngOnInit(): void {
     this.mapsAPILoader.load().then(() => {
@@ -62,6 +68,21 @@ export class HomeComponent implements OnInit {
       telefone_responsavel: ['', Validators.required],
       geolocalizacao: ['']
     })
+  }
+
+  epicFunction() {
+    console.log('hello `Home` component');
+    this.deviceInfo = this.deviceService.getDeviceInfo();
+    const isMobile = this.deviceService.isMobile();
+    const isTablet = this.deviceService.isTablet();
+    const isDesktopDevice = this.deviceService.isDesktop();
+    console.log('device',this.deviceInfo);
+    console.log('mobile',isMobile);  // returns if the device is a mobile device (android / iPhone / windows-phone etc)
+    console.log('tablet',isTablet);  // returns if the device us a tablet (iPad etc)
+    console.log('desktop',isDesktopDevice); // returns if the app is running on a Desktop browser.
+    if(!isDesktopDevice){
+      //location.reload()
+    }
   }
 
 

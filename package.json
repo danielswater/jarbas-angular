@@ -25,6 +25,7 @@
     "chart.js": "^3.3.2",
     "firebase": "^9.22.1",
     "material-icons": "^1.13.7",
+    "ngx-device-detector": "^6.0.1",
     "ngx-google-places-autocomplete": "^2.0.5",
     "ngx-spinner": "^16.0.2",
     "primeflex": "^3.2.1",
