@@ -1,6 +1,6 @@
 import { MapsAPILoader } from '@agm/core';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, NgZone, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, NgZone} from '@angular/core';
 import { UsuariosService } from './service/usuarios.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
@@ -131,50 +131,50 @@ export class HomeComponent implements OnInit {
 
   submitForm(){
     this.spinner.show()
-    if(this.form.valid){
-      const endereco = `${this.form.controls['logradouro'].value}, ${this.form.controls['numero'].value} - ${this.form.controls['bairro'].value}, ${this.form.controls['cidade'].value} - SP, ${this.form.controls['cep'].value}, Brasil`;
+    const endereco = `${this.form.controls['logradouro'].value}, ${this.form.controls['numero'].value} - ${this.form.controls['bairro'].value}, ${this.form.controls['cidade'].value} - SP, ${this.form.controls['cep'].value}, Brasil`;
 
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: endereco }, (results: any, status: any) => {
-        if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-          const location = results[0].geometry.location;
-          const latitude = location.lat();
-          const longitude = location.lng();
-  
-          const geopoint = new GeoPoint(latitude, longitude);
-          //this.modelCadastroUsuario.geolocalizacao = geopoint;
-          this.form.patchValue({geolocalizacao: geopoint})
-  
-          const usuario = this.form.value;
-  
-          this.service.verificarExistenciaCampos(usuario)
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: endereco }, (results: any, status: any) => {
+      if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+        const location = results[0].geometry.location;
+        const latitude = location.lat();
+        const longitude = location.lng();
+
+        const geopoint = new GeoPoint(latitude, longitude);
+        //this.modelCadastroUsuario.geolocalizacao = geopoint;
+        this.form.patchValue({geolocalizacao: geopoint})
+
+        const usuario = this.form.value;
+
+        this.service.verificarExistenciaCampos(usuario)
+        .then((response) => {
+          if (response) {
+            Swal.fire('Ocorreu um erro', 'CPF, CNPJ, ou Razão Social já cadastrados', 'error');
+           this.spinner.hide()
+            return;
+          }
+          this.service.criarUsuario(this.form.value)
           .then((response) => {
-            if (response) {
-              Swal.fire('Ocorreu um erro', 'CPF, CNPJ, ou Razão Social já cadastrados', 'error');
-             this.spinner.hide()
-              return;
-            }
-            this.service.criarUsuario(this.form.value)
-            .then((response) => {
-              this.spinner.hide()
-              Swal.fire('Seja Bem-vindo', `${this.form.controls['nome_responsavel'].value}, seu cadastro foi efetuado com sucesso!`, 'success');
-              this.resetFormValues();
-              this.form.reset()
-              this.clearValue()
-            })
-            .catch((error) => {
-              this.spinner.hide()
-              console.log('ERROR', error)
-            });
+            console.log(response)
+            this.spinner.hide()
+            Swal.fire('Seja Bem-vindo', `${this.form.controls['nome_responsavel'].value}, seu cadastro foi efetuado com sucesso!`, 'success');
+            this.resetFormValues();
+            this.clearValue()
+            this.radioCpfCnpj = 'CNPJ'
+            
           })
           .catch((error) => {
-            console.log('Erro ao verificar existência de cadastros:', error);
+            this.spinner.hide()
+            console.log('ERROR', error)
           });
-  
-          
-        }
-      });
-    }
+        })
+        .catch((error) => {
+          console.log('Erro ao verificar existência de cadastros:', error);
+        });
+
+        
+      }
+    });
   }
   
   extractStreetName(address: Address): string {
@@ -194,6 +194,7 @@ export class HomeComponent implements OnInit {
   }
 
   changeTipoDoc() {
+    console.log('radioCpfCnpj', this.radioCpfCnpj)
     const tipoDoc = this.form.get('tipo_documento')?.value;
   
     if (tipoDoc === 'CPF') {
@@ -205,13 +206,10 @@ export class HomeComponent implements OnInit {
 
   clearValue() {
     this.suggestion = null;
+    const cidadeControl = this.form.get('cidade');
+    if (cidadeControl) {
+      cidadeControl.clearValidators();
+      cidadeControl.updateValueAndValidity();
+    }
   }
-  
-  
-  getMask(): string {
-    const tipoDoc = this.form.get('tipo_documento')?.value;
-  
-    return tipoDoc === 'CPF' ? '999.999.999-99' : '99.999.999/9999-99';
-  }
-
 }

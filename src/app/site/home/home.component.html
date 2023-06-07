@@ -38,25 +38,22 @@
                     <div class="field col-12 md:col-4" style="display: flex;">
                         <div class="flex flex-wrap gap-3">
                             <div class="flex align-items-center">
-                                <p-radioButton name="cpf_cnpj" value="CPF" formControlName="tipo_documento" (change)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
+                                <p-radioButton value="CPF" formControlName="tipo_documento" [(ngModel)]="radioCpfCnpj" (click)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
                                     inputId="cpf_cnpj1"></p-radioButton>
                                 <label for="cpf_cnpj1" class="ml-2">CPF</label>
                             </div>
     
                             <div class="flex align-items-center">
-                                <p-radioButton name="cpf_cnpj" value="CNPJ" formControlName="tipo_documento" (change)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
+                                <p-radioButton value="CNPJ" formControlName="tipo_documento" [(ngModel)]="radioCpfCnpj" (click)="changeTipoDoc()" name="tipo_documento" id="tipo_documento"
                                     inputId="cpf_cnpj2"></p-radioButton>
                                 <label for="cpf_cnpj2" class="ml-2">CNPJ</label>
                             </div>
-                            <!--
-                                  <input type="radio" name="tipoDoc" value="CPF" formControlName="tipo_documento" (change)="changeTipoDoc()"> CPF
-  <input type="radio" name="tipoDoc" value="CNPJ" formControlName="tipo_documento" (change)="changeTipoDoc()"> CNPJ
-                            -->
                         </div>
                     </div>
     
                     <div class="field col-12 md:col-8">
-                        <p-inputMask formControlName="cpf_cnpj" name="cpf_cnpj" id="cpf_cnpj" [mask]="getMask()"></p-inputMask>
+                        <p-inputMask formControlName="cpf_cnpj" name="cpf_cnpj" *ngIf="radioCpfCnpj == 'CPF'" placeholder="000.000.000-00" id="cpf_cnpj" mask="999.999.999-99"></p-inputMask>
+                        <p-inputMask formControlName="cpf_cnpj" name="cpf_cnpj" *ngIf="radioCpfCnpj == 'CNPJ'" placeholder="00.000.000/0000-00" id="cpf_cnpj" mask="99.999.999/9999-99"></p-inputMask>
                     </div>
     
                     <div class="field col-12 md:col-10">
