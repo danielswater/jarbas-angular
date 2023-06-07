@@ -6,6 +6,7 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
 import { HomeComponent } from './site/home/home.component';
 import { NovoComponent } from './site/novo/novo.component';
 import { AuthGuard } from './demo/components/auth/login/service/auth.guard';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 
 @NgModule({
@@ -31,7 +32,10 @@ import { AuthGuard } from './demo/components/auth/login/service/auth.guard';
             { path: '**', redirectTo: '/notfound' },
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [
+      { provide: LocationStrategy, useClass: HashLocationStrategy }
+    ],
 })
 export class AppRoutingModule {
 }

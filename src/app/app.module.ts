@@ -19,6 +19,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { HomeComponent } from './site/home/home.component';
 import { UsuariosService } from './site/home/service/usuarios.service';
 
+
 //prime
 import { FormsModule } from '@angular/forms';
 import { AutoCompleteModule } from "primeng/autocomplete";
