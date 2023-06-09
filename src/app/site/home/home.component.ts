@@ -42,7 +42,6 @@ export class HomeComponent implements OnInit {
       private formBuilder: FormBuilder,
       private deviceService: DeviceDetectorService
     ) {
-      this.epicFunction();
     }
 
   ngOnInit(): void {
@@ -57,6 +56,7 @@ export class HomeComponent implements OnInit {
       complemento: ['', Validators.required],
       cpf_cnpj: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      senha: [''],
       logradouro: ['', Validators.required],
       estado: ['SP',Validators.required],
       nome_fantasia: ['', Validators.required],
@@ -66,23 +66,9 @@ export class HomeComponent implements OnInit {
       tipo_documento: ['CNPJ', Validators.required],
       telefone_estabelecimento: ['', Validators.required],
       telefone_responsavel: ['', Validators.required],
+      data_cadastro: [''],
       geolocalizacao: ['']
     })
-  }
-
-  epicFunction() {
-    console.log('hello `Home` component');
-    this.deviceInfo = this.deviceService.getDeviceInfo();
-    const isMobile = this.deviceService.isMobile();
-    const isTablet = this.deviceService.isTablet();
-    const isDesktopDevice = this.deviceService.isDesktop();
-    console.log('device',this.deviceInfo);
-    console.log('mobile',isMobile);  // returns if the device is a mobile device (android / iPhone / windows-phone etc)
-    console.log('tablet',isTablet);  // returns if the device us a tablet (iPad etc)
-    console.log('desktop',isDesktopDevice); // returns if the app is running on a Desktop browser.
-    if(!isDesktopDevice){
-      //location.reload()
-    }
   }
 
 
@@ -101,6 +87,7 @@ export class HomeComponent implements OnInit {
       complemento: ['', Validators.required],
       cpf_cnpj: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      senha: [''],
       logradouro: ['', Validators.required],
       estado: ['SP',Validators.required],
       nome_fantasia: ['', Validators.required],
@@ -110,6 +97,7 @@ export class HomeComponent implements OnInit {
       tipo_documento: ['CNPJ', Validators.required],
       telefone_estabelecimento: ['', Validators.required],
       telefone_responsavel: ['', Validators.required],
+      data_cadastro: [''],
       geolocalizacao: ['']
     });
   }
@@ -166,6 +154,8 @@ export class HomeComponent implements OnInit {
         this.form.patchValue({geolocalizacao: geopoint})
 
         const usuario = this.form.value;
+
+        this.form.patchValue({data_cadastro: new Date()})
 
         this.service.verificarExistenciaCampos(usuario)
         .then((response) => {
